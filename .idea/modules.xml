@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/starter.iml" filepath="$PROJECT_DIR$/.idea/modules/starter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/starter.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/starter.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/nd940-cap-advanced-android-programming-project-starter.iml" filepath="$PROJECT_DIR$/.idea/modules/nd940-cap-advanced-android-programming-project-starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/nd940-cap-advanced-android-programming-project-starter.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/nd940-cap-advanced-android-programming-project-starter.app.iml" />
     </modules>
   </component>
 </project>

@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.android.politicalpreparedness.databinding.FragmentElectionBinding
 
 class ElectionsFragment: Fragment() {
 
     //TODO: Declare ViewModel
+    lateinit var binding: FragmentElectionBinding
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -23,6 +25,8 @@ class ElectionsFragment: Fragment() {
         //TODO: Initiate recycler adapters
 
         //TODO: Populate recycler adapters
+
+        return binding.root
 
     }
 

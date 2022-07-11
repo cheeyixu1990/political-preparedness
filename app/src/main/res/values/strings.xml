@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Political Preparedness</string>
+    <string name="google_maps_key">AIzaSyAuaJLF67DIn5TL1u9OYbQXO7kzd9moUIo</string>
+    <string name="upcoming_elections">Upcoming Elections</string>
+    <string name="find_my_representatives">Find my representatives</string>
 
     <!-- TODO: Add necessary string values -->
 
