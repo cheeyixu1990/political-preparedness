@@ -22,13 +22,9 @@ class ElectionListAdapter(private val clickListener: ElectionClickListener): Lis
     class ElectionViewHolder private constructor (private val binding: ElectionListItemBinding) : RecyclerView.ViewHolder(binding.root){
 
         fun bind(clickListener: ElectionClickListener, item: Election) {
-//            binding.asteroid = item
-//            binding.clickableOverlay.contentDescription = String.format("%s is approaching on %s, it is %s", item.codename, item.closeApproachDate, when(item.isPotentiallyHazardous) {
-//                true -> "potentially hazardous."
-//                else -> "safe."
-//            })
-//            binding.asteroidClicked = clickListener
-//            binding.executePendingBindings()
+            binding.election = item
+            binding.electionClicked = clickListener
+            binding.executePendingBindings()
         }
 
         companion object {
@@ -52,6 +48,6 @@ class ElectionDiffCallback : DiffUtil.ItemCallback<Election>() {
     }
 }
 
-class ElectionClickListener(val asteroidFunctionBlock: (Election) -> Unit) {
-    fun onClick(asteroid: Election) = asteroidFunctionBlock(asteroid)
+class ElectionClickListener(val electionFunctionBlock: (Election) -> Unit) {
+    fun onClick(election: Election) = electionFunctionBlock(election)
 }

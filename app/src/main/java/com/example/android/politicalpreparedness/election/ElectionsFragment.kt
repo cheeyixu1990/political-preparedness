@@ -5,8 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.android.politicalpreparedness.R
@@ -14,6 +17,8 @@ import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.databinding.FragmentElectionBinding
 import com.example.android.politicalpreparedness.databinding.FragmentElectionSavedBinding
 import com.example.android.politicalpreparedness.databinding.FragmentElectionUpcomingBinding
+import com.example.android.politicalpreparedness.election.adapter.ElectionClickListener
+import com.example.android.politicalpreparedness.election.adapter.ElectionListAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -22,9 +27,20 @@ private val TAB_TITLES = arrayOf(
     R.string.tab_text_saved
 )
 
+private const val TAG = "PPElectionsFragment"
+
 class ElectionsFragment: Fragment() {
 
-    private val viewModel : ElectionsViewModel by lazy {
+    lateinit var binding: FragmentElectionBinding
+
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+
+        val binding: FragmentElectionBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_election, container, false)
+
+
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onViewCreated()"
         }
@@ -34,14 +50,8 @@ class ElectionsFragment: Fragment() {
             ).electionDao
         )
 
-        ViewModelProvider(this, viewModelFactory).get(ElectionsViewModel::class.java)
-    }
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(ElectionsViewModel::class.java)
 
-    lateinit var binding: FragmentElectionBinding
-
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
@@ -65,13 +75,6 @@ class ElectionsFragment: Fragment() {
         TabLayoutMediator(tabs, viewPager) { tab, position ->
             tab.text = getString(TAB_TITLES[position])
         }.attach()
-        //TODO: Add binding values
-
-        //TODO: Link elections to voter info
-
-        //TODO: Initiate recycler adapters
-
-        //TODO: Populate recycler adapters
 
         return binding.root
 
@@ -84,12 +87,41 @@ class ElectionsFragment: Fragment() {
 class UpcomingElectionsFragment : Fragment() {
 
     private lateinit var binding: FragmentElectionUpcomingBinding
+    private lateinit var electionListAdapter: ElectionListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        binding = FragmentElectionUpcomingBinding.inflate(layoutInflater)
+
+        val sharedElectionsViewModel: ElectionsViewModel by viewModels({ requireParentFragment() })
+
+
+        electionListAdapter = ElectionListAdapter(
+            ElectionClickListener{
+                sharedElectionsViewModel.showVotersInfo(it)
+            }
+        )
+
+        binding.upcomingElectionsRecycler.adapter = electionListAdapter
+        sharedElectionsViewModel.getUpcomingElections()
+        sharedElectionsViewModel.navToShowVotersInfo.observe(viewLifecycleOwner) {
+            if (it != null) {
+                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(it.id, it.division))
+                sharedElectionsViewModel.navigatedToVotersInfo()
+            }
+        }
+        sharedElectionsViewModel.upcomingElections.observe(viewLifecycleOwner) {
+            it?.let {
+                electionListAdapter.submitList(it)
+                it.forEach {
+                    Log.d(TAG, it.name)
+                }
+            }
+        }
 
         return binding.root
     }
@@ -98,12 +130,40 @@ class UpcomingElectionsFragment : Fragment() {
 class SavedElectionsFragment : Fragment() {
 
     private lateinit var binding: FragmentElectionSavedBinding
+    private lateinit var electionListAdapter: ElectionListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        binding = FragmentElectionSavedBinding.inflate(layoutInflater)
+
+        val sharedElectionsViewModel: ElectionsViewModel by viewModels({ requireParentFragment() })
+
+
+        electionListAdapter = ElectionListAdapter(
+            ElectionClickListener{
+                sharedElectionsViewModel.showVotersInfo(it)
+            }
+        )
+        binding.savedElectionsRecycler.adapter = electionListAdapter
+        sharedElectionsViewModel.getSavedElections()
+        sharedElectionsViewModel.navToShowVotersInfo.observe(viewLifecycleOwner) {
+            if (it != null) {
+                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(it.id, it.division))
+                sharedElectionsViewModel.navigatedToVotersInfo()
+            }
+        }
+        sharedElectionsViewModel.savedElections.observe(viewLifecycleOwner) {
+            it?.let {
+                electionListAdapter.submitList(it)
+                it.forEach {
+                    Log.d(TAG, it.name)
+                }
+            }
+        }
 
         return binding.root
     }
