@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.android.politicalpreparedness.R
@@ -102,21 +101,26 @@ class UpcomingElectionsFragment : Fragment() {
 
         electionListAdapter = ElectionListAdapter(
             ElectionClickListener{
-                sharedElectionsViewModel.showVotersInfo(it)
+                Log.d(TAG, "In election onclick: ${it.id}")
+                sharedElectionsViewModel.showVotersInfoForUpcomingElection(it)
             }
         )
 
         binding.upcomingElectionsRecycler.adapter = electionListAdapter
         sharedElectionsViewModel.getUpcomingElections()
-        sharedElectionsViewModel.navToShowVotersInfo.observe(viewLifecycleOwner) {
+        sharedElectionsViewModel.showVotersInfoForUpcomingElection.observe(viewLifecycleOwner) {
             if (it != null) {
-                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(it.id, it.division))
-                sharedElectionsViewModel.navigatedToVotersInfo()
+                Log.d(TAG, "Change observed, Election id: ${it.id}")
+                sharedElectionsViewModel.getVoterInfoForUpcomingElections(it.id, it.division)
+//                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(it.id, it.division))
+//                sharedElectionsViewModel.navigatedToVotersInfo()
             }
         }
         sharedElectionsViewModel.upcomingElections.observe(viewLifecycleOwner) {
             it?.let {
+                Log.d(TAG, "Upcoming election list change observed, Election id: ${it.count()}")
                 electionListAdapter.submitList(it)
+                electionListAdapter.notifyDataSetChanged()
                 it.forEach {
                     Log.d(TAG, it.name)
                 }
@@ -145,20 +149,24 @@ class SavedElectionsFragment : Fragment() {
 
         electionListAdapter = ElectionListAdapter(
             ElectionClickListener{
-                sharedElectionsViewModel.showVotersInfo(it)
+                Log.d(TAG, "In election onclick: ${it.id}")
+                sharedElectionsViewModel.showVotersInfoForSavedElection(it)
             }
         )
         binding.savedElectionsRecycler.adapter = electionListAdapter
-        sharedElectionsViewModel.getSavedElections()
-        sharedElectionsViewModel.navToShowVotersInfo.observe(viewLifecycleOwner) {
+        sharedElectionsViewModel.showVotersInfoForSavedElection.observe(viewLifecycleOwner) {
             if (it != null) {
-                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(it.id, it.division))
-                sharedElectionsViewModel.navigatedToVotersInfo()
+                sharedElectionsViewModel.getVoterInfoForSavedElections(it.id, it.division)
+
+//                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(it.id, it.division))
+//                sharedElectionsViewModel.navigatedToVotersInfo()
             }
         }
         sharedElectionsViewModel.savedElections.observe(viewLifecycleOwner) {
             it?.let {
+                Log.d(TAG, "Saved election list change observed, Election id: ${it.count()}")
                 electionListAdapter.submitList(it)
+                electionListAdapter.notifyDataSetChanged()
                 it.forEach {
                     Log.d(TAG, it.name)
                 }

@@ -8,54 +8,142 @@
             type="com.example.android.politicalpreparedness.network.models.Election" />
 
         <variable
+            name="voterInfo"
+            type="com.example.android.politicalpreparedness.network.models.VoterInfoResponse" />
+
+        <variable
             name="electionClicked"
             type="com.example.android.politicalpreparedness.election.adapter.ElectionClickListener" />
 
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:padding="8dp"
+        android:layout_margin="2dp"
+        android:animateLayoutChanges="true"
         >
 
-        <TextView
-            android:id="@+id/txtElectionName"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_corner"
-            android:gravity="center"
-            android:text="@{election.name}"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimaryDark"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Election name placeholder" />
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:animateLayoutChanges="true"
+            >
 
-        <TextView
-            android:id="@+id/txtDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@{election.electionDay.toString()}"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/txtElectionName"
-            app:layout_constraintTop_toBottomOf="@+id/txtElectionName"
-            tools:text="Date: Some date" />
+            <TextView
+                android:id="@+id/txtElectionName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corner"
+                android:gravity="center"
+                android:text="@{election.name}"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Election name placeholder" />
 
-        <View
-            android:id="@+id/clickableOverlay"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="?attr/selectableItemBackground"
-            android:onClick="@{() -> electionClicked.onClick(election)}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@{election.electionDay.toString()}"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintStart_toStartOf="@+id/txtElectionName"
+                app:layout_constraintTop_toBottomOf="@+id/txtElectionName"
+                tools:text="Date: Some date" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:id="@+id/clickableOverlay"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?attr/selectableItemBackground"
+                android:onClick="@{() -> electionClicked.onClick(election)}"
+                app:layout_constraintBottom_toBottomOf="@+id/txtDate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/expanded_voter_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtDate"
+                android:animateLayoutChanges="true"
+                >
+
+                <TextView
+                    android:id="@+id/state_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/election_information"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/hyperlink_style" />
+
+                <TextView
+                    android:id="@+id/state_locations"
+                    style="@style/hyperlink_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/voting_location"
+                    app:layout_constraintStart_toStartOf="@+id/state_header"
+                    app:layout_constraintTop_toBottomOf="@+id/state_header" />
+
+                <TextView
+                    android:id="@+id/state_ballot"
+                    style="@style/hyperlink_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/ballot_information"
+                    app:layout_constraintStart_toStartOf="@+id/state_locations"
+                    app:layout_constraintTop_toBottomOf="@+id/state_locations" />
+
+                <TextView
+                    android:id="@+id/state_correspondence_header"
+                    style="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/address"
+                    app:layout_constraintStart_toStartOf="@+id/state_ballot"
+                    app:layout_constraintTop_toBottomOf="@id/state_ballot" />
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{voterInfo.state.get(0).electionAdministrationBody.correspondenceAddress.toFormattedString()}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/state_correspondence_header" />
+
+                <Button
+                    android:id="@+id/btnFollow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    tools:text="Follow"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/address" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
 </layout>

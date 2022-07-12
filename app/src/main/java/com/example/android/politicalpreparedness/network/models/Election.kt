@@ -10,4 +10,7 @@ data class Election(
         @ColumnInfo(name = "name")val name: String,
         @ColumnInfo(name = "electionDay")val electionDay: Date,
         @Embedded(prefix = "division_") @Json(name="ocdDivisionId") val division: Division
-)
+) {
+        @Ignore var voterInfo: VoterInfoResponse? = null
+        @Ignore var expanded: Boolean? = false
+}

@@ -9,6 +9,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="hyperlink_style">
+        <item name="android:drawableLeft">@drawable/ic_baseline_link_24</item>
+        <item name="android:textColor">#0000FF</item>
+        <item name="android:textStyle"></item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <!-- TODO: Add necessary styles -->
 
 </resources>

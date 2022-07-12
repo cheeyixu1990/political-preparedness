@@ -28,6 +28,7 @@ abstract class ElectionDatabase: RoomDatabase() {
                             "election_database"
                     )
                             .fallbackToDestructiveMigration()
+                            .allowMainThreadQueries()
                             .build()
 
                     INSTANCE = instance

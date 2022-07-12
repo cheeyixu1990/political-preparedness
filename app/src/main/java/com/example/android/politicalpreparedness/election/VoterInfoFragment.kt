@@ -2,7 +2,11 @@ package com.example.android.politicalpreparedness.election
 
 import android.os.Bundle
 import android.view.*
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.android.politicalpreparedness.R
+import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBinding
 
 class VoterInfoFragment : Fragment() {
@@ -13,14 +17,24 @@ class VoterInfoFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        //TODO: Add ViewModel values and create ViewModel
+        val binding: FragmentVoterInfoBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_voter_info, container, false)
 
-        //TODO: Add binding values
+        val activity = requireNotNull(this.activity) {
+            "You can only access the viewModel after onViewCreated()"
+        }
+        val args = VoterInfoFragmentArgs.fromBundle(requireArguments())
+        val viewModelFactory = VoterInfoViewModelFactory(
+            ElectionDatabase.getInstance(
+                activity.application
+            ).electionDao, args.argElectionId, args.argDivision
+        )
 
-        //TODO: Populate voter info -- hide views without provided data.
-        /**
-        Hint: You will need to ensure proper data is provided from previous fragment.
-        */
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(VoterInfoViewModel::class.java)
+
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
 
 
         //TODO: Handle loading of URLs

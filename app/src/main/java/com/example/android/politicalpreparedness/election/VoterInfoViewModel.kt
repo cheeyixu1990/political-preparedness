@@ -1,21 +1,59 @@
 package com.example.android.politicalpreparedness.election
 
+import android.graphics.Color
+import android.graphics.Color.*
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.Spinner
+import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.android.politicalpreparedness.R
 import com.example.android.politicalpreparedness.database.ElectionDao
+import com.example.android.politicalpreparedness.database.ElectionDatabase
+import com.example.android.politicalpreparedness.network.CivicsApi
+import com.example.android.politicalpreparedness.network.models.Division
+import com.example.android.politicalpreparedness.network.models.Election
+import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
+import com.example.android.politicalpreparedness.representative.adapter.toTypedAdapter
+import kotlinx.coroutines.launch
+import retrofit2.await
 
-class VoterInfoViewModel(private val dataSource: ElectionDao) : ViewModel() {
+class VoterInfoViewModel(private val dataSource: ElectionDao, private val electionId: Int, private val division: Division) : ViewModel() {
 
-    //TODO: Add live data to hold voter info
+    private val _voterInfo = MutableLiveData<VoterInfoResponse?>()
+    val voterInfo : LiveData<VoterInfoResponse?>
+        get() = _voterInfo
 
-    //TODO: Add var and methods to populate voter info
+    private val _url = MutableLiveData<String>()
+    val url : LiveData<String>
+        get() = _url
 
-    //TODO: Add var and methods to support loading URLs
+    init {
+         getVoterInfo()
+    }
 
-    //TODO: Add var and methods to save and remove elections to local database
-    //TODO: cont'd -- Populate initial state of save button to reflect proper action based on election saved status
+    private fun getVoterInfo() {
+        viewModelScope.launch {
+            try {
+                _voterInfo.value = CivicsApi.retrofitService.getVoterInfo(division.state, electionId)
+            } catch (e: Exception) {
+                _voterInfo.value = null
+            }
+        }
+    }
 
-    /**
-     * Hint: The saved state can be accomplished in multiple ways. It is directly related to how elections are saved/removed from the database.
-     */
+    fun onFollowButtonClick() {
+        viewModelScope.launch {
+            val savedElection = dataSource.getElection(electionId)
+            if (savedElection != null) {
+                dataSource.deleteByElectionId(electionId)
+            } else {
+                voterInfo.value?.let { dataSource.insertElection(it.election) }
+            }
+        }
+    }
 
 }

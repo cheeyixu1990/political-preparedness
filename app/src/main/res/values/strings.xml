@@ -6,7 +6,11 @@
     <string name="find_my_representatives">Find my representatives</string>
     <string name="tab_text_upcoming">Upcoming Elections</string>
     <string name="tab_text_saved">Saved Elections</string>
-
-    <!-- TODO: Add necessary string values -->
+    <string name="unfollow">Unfollow</string>
+    <string name="follow">Follow</string>
+    <string name="election_information"><u>Election Information</u></string>
+    <string name="voting_location"><u>Voting Location</u></string>
+    <string name="ballot_information"><u>Ballot Information</u></string>
+    <string name="address">Correspondence Address</string>
 
 </resources>
