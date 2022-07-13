@@ -12,5 +12,15 @@
     <string name="voting_location"><u>Voting Location</u></string>
     <string name="ballot_information"><u>Ballot Information</u></string>
     <string name="address">Correspondence Address</string>
+    <string name="representative_search">Representative Search</string>
+    <string name="address_line_1">Address Line 1</string>
+    <string name="address_line_2">Address Line 2</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
+    <string name="zip_code">Zip Code</string>
+    <string name="use_my_location">Use My Location</string>
+    <string name="my_representatives">My Representatives</string>
+    <string name="location_permission_denied_explanation">Your location will not be shown. Click \'Settings\' if you changed your mind.</string>
+    <string name="settings">Settings</string>
 
 </resources>

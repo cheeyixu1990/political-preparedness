@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="default_padding">8dp</dimen>
+    <dimen name="card_view_margin">2dp</dimen>
+    <dimen name="list_item_margin">8dp</dimen>
+    <dimen name="list_item_padding">8dp</dimen>
+    <dimen name="title_text_size">24sp</dimen>
 
-    <!-- TODO: Add necessary dimension values -->s
 
 </resources>

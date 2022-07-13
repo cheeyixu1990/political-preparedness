@@ -8,6 +8,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -36,7 +37,7 @@ private val retrofit = Retrofit.Builder()
 
 interface CivicsApiService {
     @GET("elections")
-    suspend fun getAllElections(): ElectionResponse
+    fun getAllElections(): Deferred<ElectionResponse>
 
     @GET("voterinfo")
     suspend fun getVoterInfo (@Query("address") address: String, @Query("electionId") electionId: Int? = 0): VoterInfoResponse

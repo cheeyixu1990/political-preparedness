@@ -88,6 +88,37 @@ class UpcomingElectionsFragment : Fragment() {
     private lateinit var binding: FragmentElectionUpcomingBinding
     private lateinit var electionListAdapter: ElectionListAdapter
 
+    override fun onDetach() {
+        super.onDetach()
+        Log.d(TAG, "In UpcomingElectionsFragment onDetach")
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        Log.d(TAG, "In UpcomingElectionsFragment onViewStateRestored")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "In UpcomingElectionsFragment onResume")
+        electionListAdapter.notifyDataSetChanged()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "In UpcomingElectionsFragment onPause")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "In UpcomingElectionsFragment onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "In UpcomingElectionsFragment onDestroy")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -112,18 +143,13 @@ class UpcomingElectionsFragment : Fragment() {
             if (it != null) {
                 Log.d(TAG, "Change observed, Election id: ${it.id}")
                 sharedElectionsViewModel.getVoterInfoForUpcomingElections(it.id, it.division)
-//                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(it.id, it.division))
-//                sharedElectionsViewModel.navigatedToVotersInfo()
             }
         }
         sharedElectionsViewModel.upcomingElections.observe(viewLifecycleOwner) {
             it?.let {
-                Log.d(TAG, "Upcoming election list change observed, Election id: ${it.count()}")
+                Log.d(TAG, "Upcoming election list change observed, list count: ${it.count()}")
                 electionListAdapter.submitList(it)
                 electionListAdapter.notifyDataSetChanged()
-                it.forEach {
-                    Log.d(TAG, it.name)
-                }
             }
         }
 
@@ -135,6 +161,36 @@ class SavedElectionsFragment : Fragment() {
 
     private lateinit var binding: FragmentElectionSavedBinding
     private lateinit var electionListAdapter: ElectionListAdapter
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d(TAG, "In SavedElectionsFragment onDetach")
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        Log.d(TAG, "In SavedElectionsFragment onViewStateRestored")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "In SavedElectionsFragment onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "In SavedElectionsFragment onPause")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "In SavedElectionsFragment onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "In SavedElectionsFragment onDestroy")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -157,19 +213,16 @@ class SavedElectionsFragment : Fragment() {
         sharedElectionsViewModel.showVotersInfoForSavedElection.observe(viewLifecycleOwner) {
             if (it != null) {
                 sharedElectionsViewModel.getVoterInfoForSavedElections(it.id, it.division)
-
-//                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(it.id, it.division))
-//                sharedElectionsViewModel.navigatedToVotersInfo()
             }
         }
         sharedElectionsViewModel.savedElections.observe(viewLifecycleOwner) {
             it?.let {
                 Log.d(TAG, "Saved election list change observed, Election id: ${it.count()}")
-                electionListAdapter.submitList(it)
-                electionListAdapter.notifyDataSetChanged()
                 it.forEach {
-                    Log.d(TAG, it.name)
+                    Log.d(TAG, "id: ${it.id}, expanded: ${it.expanded}, switch: ${it.savedElectionExpandSwitch}")
                 }
+                electionListAdapter.notifyDataSetChanged()
+                electionListAdapter.submitList(it)
             }
         }
 

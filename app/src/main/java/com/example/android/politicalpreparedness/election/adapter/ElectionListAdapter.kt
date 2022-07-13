@@ -2,11 +2,14 @@ package com.example.android.politicalpreparedness.election.adapter
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.databinding.ElectionListItemBinding
+import com.example.android.politicalpreparedness.election.setButtonState
 import com.example.android.politicalpreparedness.network.models.Election
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,25 +41,63 @@ class ElectionListAdapter(private val clickListener: ElectionClickListener): Lis
         fun bind(clickListener: ElectionClickListener, item: Election) {
             binding.election = item
             binding.electionClicked = clickListener
-            binding.voterInfo = item.voterInfo
-            Log.d(TAG, "item.expanded: ${item.expanded}")
+            val voterInfo = item.voterInfo
+            binding.voterInfo = voterInfo
+            Log.d(TAG, "VoterInfo is null: ${item.voterInfo == null}")
             binding.expandedVoterInfo.visibility = when (item.expanded) {
                 true -> View.VISIBLE
                 else -> View.GONE
             }
-
-            val electionDao = ElectionDatabase.getInstance(binding.root.context).electionDao
-            binding.btnFollow.setOnClickListener {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val savedElection = electionDao.getElection(item.id)
-                    if (savedElection != null) {
-                        electionDao.deleteByElectionId(item.id)
-                    } else {
-                        item.voterInfo?.let { electionDao.insertElection(it.election) }
+            if (voterInfo != null) {
+                if (voterInfo.state?.get(0)?.electionAdministrationBody?.electionInfoUrl != null){
+                    binding.stateHeader.apply {
+                        visibility = View.VISIBLE
+                        setOnClickListener {
+                            openUrl(voterInfo.state.get(0).electionAdministrationBody.electionInfoUrl)
+                        }
                     }
+                }
+
+                if (voterInfo.state?.get(0)?.electionAdministrationBody?.ballotInfoUrl != null){
+                    binding.stateBallot.apply {
+                        visibility = View.VISIBLE
+                        setOnClickListener {
+                            openUrl(voterInfo.state.get(0).electionAdministrationBody.ballotInfoUrl)
+                        }
+                    }
+                }
+
+                if (voterInfo.state?.get(0)?.electionAdministrationBody?.votingLocationFinderUrl != null){
+                    binding.stateLocations.apply {
+                        visibility = View.VISIBLE
+                        setOnClickListener {
+                            openUrl(voterInfo.state.get(0).electionAdministrationBody.votingLocationFinderUrl)
+                        }
+                    }
+                }
+
+                if (voterInfo.state?.get(0)?.electionAdministrationBody?.correspondenceAddress != null) {
+                    binding.address.visibility = View.VISIBLE
+                    binding.stateCorrespondenceHeader.visibility = View.VISIBLE
                 }
             }
 
+
+            val electionDao = ElectionDatabase.getInstance(binding.root.context).electionDao
+            binding.btnFollow.apply {
+                setOnClickListener {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val savedElection = electionDao.getElection(item.id)
+                        if (savedElection != null) {
+                            electionDao.deleteByElectionId(item.id)
+                        } else {
+                            item.voterInfo?.let { electionDao.insertElection(it.election) }
+                        }
+                        setButtonState(item.id)
+                    }
+                }
+                setButtonState(item.id)
+            }
 
 
 //            if (item.expanded == true) {
@@ -73,6 +115,12 @@ class ElectionListAdapter(private val clickListener: ElectionClickListener): Lis
 //            }
 
             binding.executePendingBindings()
+        }
+
+        private fun openUrl(url: String?){
+            url?.let {
+                startActivity(binding.root.context, Intent(Intent.ACTION_VIEW, Uri.parse(url)), null)
+            }
         }
 
         companion object {

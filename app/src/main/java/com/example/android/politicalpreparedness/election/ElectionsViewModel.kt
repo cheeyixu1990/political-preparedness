@@ -3,11 +3,7 @@ package com.example.android.politicalpreparedness.election
 import android.graphics.Color
 import android.util.Log
 import android.widget.Button
-import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.android.politicalpreparedness.R
 import com.example.android.politicalpreparedness.database.ElectionDao
 import com.example.android.politicalpreparedness.database.ElectionDatabase
@@ -17,9 +13,26 @@ import com.example.android.politicalpreparedness.network.models.Election
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
 import kotlinx.coroutines.launch
 
+
 private const val TAG = "PPElectionsVM"
 
 class ElectionsViewModel(private val dataSource: ElectionDao) : ViewModel() {
+
+//    val nameQueryLiveData = MutableLiveData<List<Election>>()
+//
+//    fun getUsersWithNameLiveData(): LiveData<List<Election>> {
+//        return Transformations.switchMap(
+//            nameQueryLiveData
+//        ) { name: Any? ->
+//            myDataSource.getUsersWithNameLiveData(
+//                name
+//            )
+//        }
+//    }
+//
+//    fun setNameQuery(name: List<Election>?) {
+//        this.nameQueryLiveData.setValue(name)
+//    }
 
     private val _upcomingElections = MutableLiveData<List<Election>>()
     val upcomingElections: LiveData<List<Election>>
@@ -51,9 +64,13 @@ class ElectionsViewModel(private val dataSource: ElectionDao) : ViewModel() {
         _upcomingElectionLoading.value = true
         viewModelScope.launch {
             try {
-                _upcomingElections.value = CivicsApi.retrofitService.getAllElections().elections
+                val elections = CivicsApi.retrofitService.getAllElections().await().elections
+                elections.removeAll { it.id == 2000 }
+                _upcomingElections.value = elections
+
                 _upcomingElectionLoading.value = false
             } catch (e: Exception) {
+                Log.d(TAG, e.stackTraceToString())
                 _upcomingElections.value = listOf()
             }
         }
@@ -71,12 +88,13 @@ class ElectionsViewModel(private val dataSource: ElectionDao) : ViewModel() {
                     it.id == electionId
                 }?.apply {
                     this.voterInfo = voterInfo
-                    expanded = !expanded!!
-                    Log.d(TAG, "Saved election this.voterInfo: ${this.voterInfo}, expanded: ${expanded}")
+//                    Log.d(TAG, "Saved election this.expanded before change: ${expanded}")
+                    savedElectionExpandSwitch = !savedElectionExpandSwitch!!
+                    expanded = savedElectionExpandSwitch
+                    dataSource.updateElection(this)
+                    Log.d(TAG, "Saved election this.expanded: ${expanded}")
                 }
                 Log.d(TAG, "Number of savedElections: ${savedElections.value?.count()}")
-                val tempList = savedElections.value
-
 
                 Log.d(TAG, "voterInfo: ${voterInfo.state}")
 
@@ -125,7 +143,6 @@ class ElectionsViewModel(private val dataSource: ElectionDao) : ViewModel() {
 
 }
 
-@BindingAdapter("buttonState")
 fun Button.setButtonState(electionId: Int) {
     val electionDao = ElectionDatabase.getInstance(context).electionDao
     val savedElection = electionDao.getElection(electionId)
