@@ -10,19 +10,6 @@
             type="com.example.android.politicalpreparedness.representative.RepresentativeViewModel" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar_layout"
-            android:background="@color/transparent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:paddingBottom="8dp">
-
             <androidx.constraintlayout.motion.widget.MotionLayout
                 android:id="@+id/motinLayout"
                 android:layout_width="match_parent"
@@ -110,9 +97,9 @@
                     style="@style/hyperlink_style_no_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.clearAllField()}"
                     android:text="@string/clear"
                     android:textSize="20sp"
-                    android:onClick="@{() -> viewModel.clearAllField()}"
                     app:layout_constraintBottom_toBottomOf="@id/zip"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="100"
@@ -144,24 +131,19 @@
                     android:layout_height="wrap_content"
                     android:text="@string/my_representatives"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btnLocation" />
+                    app:layout_constraintTop_toBottomOf="@id/btnLocation"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/representatives_list"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/representative_title" />
 
 
             </androidx.constraintlayout.motion.widget.MotionLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            >
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/representatives_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-        </androidx.core.widget.NestedScrollView>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
