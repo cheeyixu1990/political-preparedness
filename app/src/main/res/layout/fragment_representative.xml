@@ -24,20 +24,22 @@
             android:paddingBottom="8dp">
 
             <androidx.constraintlayout.motion.widget.MotionLayout
+                android:id="@+id/motinLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:minHeight="30dp"
+                android:saveEnabled="true"
                 app:layoutDescription="@xml/fragment_representative_scene"
                 app:layout_scrollFlags="scroll|enterAlways|snap|exitUntilCollapsed">
 
                 <TextView
                     android:id="@+id/search_title"
+                    style="@style/title_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/representative_search"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    style="@style/title_style" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
                     android:id="@+id/address_line_1"
@@ -46,7 +48,7 @@
                     android:autofillHints=".AUTOFILL_HINT_POSTAL_ADDRESS"
                     android:hint="@string/address_line_1"
                     android:inputType="textPostalAddress"
-                    android:text="@{viewModel.address.line1}"
+                    android:text="@={viewModel.addressLine1}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/search_title"
                     tools:text="Address Line 1" />
@@ -58,10 +60,10 @@
                     android:autofillHints=".AUTOFILL_HINT_POSTAL_ADDRESS_APT_NUMBER"
                     android:hint="@string/address_line_2"
                     android:inputType="textPostalAddress"
-                    android:text="@{viewModel.address.line2}"
-                    tools:text="Address Line 2"
+                    android:text="@={viewModel.addressLine2}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/address_line_1" />
+                    app:layout_constraintTop_toBottomOf="@id/address_line_1"
+                    tools:text="Address Line 2" />
 
                 <EditText
                     android:id="@+id/city"
@@ -70,14 +72,15 @@
                     android:autofillHints=".AUTOFILL_HINT_POSTAL_ADDRESS_LOCALITY"
                     android:hint="@string/city"
                     android:inputType="textPostalAddress"
-                    android:text="@{viewModel.address.city}"
-                    tools:text="City"
+                    android:text="@={viewModel.city}"
                     app:layout_constraintEnd_toStartOf="@id/state"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/address_line_2" />
+                    app:layout_constraintTop_toBottomOf="@id/address_line_2"
+                    tools:text="City" />
 
                 <Spinner
                     android:id="@+id/state"
+                    stateValue="@{viewModel.state}"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:autofillHints=".AUTOFILL_HINT_POSTAL_ADDRESS_REGION"
@@ -87,8 +90,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/city"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/city"
-                    app:layout_constraintTop_toTopOf="@id/city"
-                    stateValue="@{viewModel.address.state}" />
+                    app:layout_constraintTop_toTopOf="@id/city" />
 
                 <EditText
                     android:id="@+id/zip"
@@ -98,10 +100,24 @@
                     android:hint="@string/zip_code"
                     android:inputType="number"
                     android:maxLength="5"
-                    android:text="@{viewModel.address.zip}"
+                    android:text="@={viewModel.zip}"
                     app:layout_constraintEnd_toEndOf="@id/city"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/city" />
+
+                <TextView
+                    android:id="@+id/txtClear"
+                    style="@style/hyperlink_style_no_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/clear"
+                    android:textSize="20sp"
+                    android:onClick="@{() -> viewModel.clearAllField()}"
+                    app:layout_constraintBottom_toBottomOf="@id/zip"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="100"
+                    app:layout_constraintStart_toEndOf="@+id/zip"
+                    app:layout_constraintTop_toBottomOf="@id/state" />
 
                 <Button
                     android:id="@+id/btnSearch"
@@ -123,17 +139,19 @@
 
                 <TextView
                     android:id="@+id/representative_title"
+                    style="@style/title_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/my_representatives"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btnLocation"
-                    style="@style/title_style"/>
+                    app:layout_constraintTop_toBottomOf="@id/btnLocation" />
+
 
             </androidx.constraintlayout.motion.widget.MotionLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

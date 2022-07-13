@@ -19,6 +19,12 @@ class RepresentativeViewModel: ViewModel() {
     val address: LiveData<Address>
         get() = _address
 
+    var addressLine1 = MutableLiveData<String>()
+    var addressLine2 = MutableLiveData<String>()
+    var city = MutableLiveData<String>()
+    var state = MutableLiveData<String>()
+    var zip = MutableLiveData<String>()
+
     fun findRepresentatives() {
         viewModelScope.launch {
             try {
@@ -36,9 +42,27 @@ class RepresentativeViewModel: ViewModel() {
         }
     }
 
+    fun clearAllField(){
+        addressLine1.value = ""
+        addressLine2.value = ""
+        city.value = ""
+        zip.value = ""
+        state.value = "Alabama"
+    }
 
     fun setAddress(address: Address){
         _address.value = address
+        addressLine1.value = address.line1
+        addressLine2.value = address.line2.toString()
+        city.value = address.city
+        zip.value = address.zip
+        state.value = address.state.toString()
+    }
+
+    fun restoreRepList(repList: List<Representative>?){
+        if (repList != null) {
+            _representatives.value = repList!!
+        }
     }
 
 }
